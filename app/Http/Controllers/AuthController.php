@@ -4,34 +4,31 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Models\User;
+use App\Services\Interfaces\AuthServiceInterface;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    protected $authService;
+    
+    public function __construct(AuthServiceInterface $authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Register a new user
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
+        $result = $this->authService->register($request->validated());
+        
         return response()->json([
             'status' => 'success',
             'message' => 'User registered successfully',
-            'data' => [
-                'user' => $user,
-                'token' => $token
-            ]
+            'data' => $result
         ], 201);
     }
 
@@ -40,27 +37,20 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        // Check email
-        $user = User::where('email', $request->email)->first();
-        
-        // Check password
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        try {
+            $result = $this->authService->login($request->validated());
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User logged in successfully',
+                'data' => $result
+            ]);
+        } catch (AuthenticationException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Invalid credentials'
+                'message' => $e->getMessage()
             ], 401);
         }
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User logged in successfully',
-            'data' => [
-                'user' => $user,
-                'token' => $token
-            ]
-        ]);
     }
 
     /**
@@ -68,8 +58,8 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
-
+        $this->authService->logout($request);
+        
         return response()->json([
             'status' => 'success',
             'message' => 'User logged out successfully'
@@ -81,9 +71,11 @@ class AuthController extends Controller
      */
     public function profile(Request $request): JsonResponse
     {
+        $user = $this->authService->getProfile($request);
+        
         return response()->json([
             'status' => 'success',
-            'data' => $request->user()
+            'data' => $user
         ]);
     }
 }
