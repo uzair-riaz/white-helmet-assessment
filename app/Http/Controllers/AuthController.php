@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Services\Interfaces\AuthServiceInterface;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -23,13 +24,20 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $result = $this->authService->register($request->validated());
-        
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User registered successfully',
-            'data' => $result
-        ], 201);
+        try {
+            $result = $this->authService->register($request->validated());
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User registered successfully',
+                'data' => $result
+            ], 201);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error creating user'
+            ], 500);
+        }
     }
 
     /**
@@ -50,6 +58,11 @@ class AuthController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ], 401);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
         }
     }
 
@@ -58,12 +71,19 @@ class AuthController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $this->authService->logout($request);
-        
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User logged out successfully'
-        ]);
+        try {
+            $this->authService->logout($request);
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User logged out successfully'
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        }
     }
 
     /**
@@ -71,11 +91,25 @@ class AuthController extends Controller
      */
     public function profile(Request $request): JsonResponse
     {
-        $user = $this->authService->getProfile($request);
-        
-        return response()->json([
-            'status' => 'success',
-            'data' => $user
-        ]);
+        try {
+            $user = $this->authService->getProfile($request);
+            
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User not found'
+                ], 404);
+            }
+            
+            return response()->json([
+                'status' => 'success',
+                'data' => $user
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        }
     }
 }

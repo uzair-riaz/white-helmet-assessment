@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Services\Interfaces\TaskServiceInterface;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 class TaskController extends Controller
@@ -61,6 +62,11 @@ class TaskController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ], 403);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Task not found'
+            ], 404);
         }
     }
 
@@ -82,6 +88,11 @@ class TaskController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ], 403);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Task not found'
+            ], 404);
         }
     }
 
@@ -102,6 +113,11 @@ class TaskController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ], 403);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Task not found'
+            ], 404);
         }
     }
 

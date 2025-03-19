@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Services\Interfaces\CommentServiceInterface;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
@@ -34,6 +35,11 @@ class CommentController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ], 403);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Task not found'
+            ], 404);
         }
     }
 
@@ -55,6 +61,11 @@ class CommentController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ], 403);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Task not found'
+            ], 404);
         }
     }
 
@@ -76,6 +87,12 @@ class CommentController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ], 403);
+        } catch (ModelNotFoundException $e) {
+            $modelType = strpos($e->getMessage(), 'Task') !== false ? 'Task' : 'Comment';
+            return response()->json([
+                'status' => 'error',
+                'message' => $modelType . ' not found'
+            ], 404);
         }
     }
 
@@ -96,6 +113,12 @@ class CommentController extends Controller
                 'status' => 'error',
                 'message' => $e->getMessage()
             ], 403);
+        } catch (ModelNotFoundException $e) {
+            $modelType = strpos($e->getMessage(), 'Task') !== false ? 'Task' : 'Comment';
+            return response()->json([
+                'status' => 'error',
+                'message' => $modelType . ' not found'
+            ], 404);
         }
     }
 }
