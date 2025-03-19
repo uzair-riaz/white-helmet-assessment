@@ -7,6 +7,72 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## API-Only Laravel Application
+
+This is an API-only Laravel application with no frontend components. It's designed to serve as a backend API service that can be consumed by any frontend application, mobile app, or other services.
+
+## Docker Setup
+
+This project is dockerized for easy local development. Docker and Docker Compose are required to run the application using the provided configuration.
+
+### Prerequisites
+
+- Docker
+- Docker Compose
+
+### Getting Started
+
+1. Clone the repository
+2. Copy the example environment file:
+   ```
+   copy .env.example .env
+   ```
+3. Build and start the Docker containers:
+   ```
+   docker-compose up -d
+   ```
+4. Generate an application key:
+   ```
+   docker-compose exec app php artisan key:generate
+   ```
+5. Run database migrations:
+   ```
+   docker-compose exec app php artisan migrate
+   ```
+
+### Docker Utility Script
+
+A PowerShell utility script is included for common Docker operations:
+
+```
+# Run in PowerShell
+.\docker.ps1 up           # Start the Docker containers
+.\docker.ps1 down         # Stop the Docker containers
+.\docker.ps1 migrate      # Run database migrations
+.\docker.ps1 fresh        # Drop all tables and re-run migrations
+.\docker.ps1 seed         # Seed the database
+.\docker.ps1 artisan      # Run Artisan commands
+.\docker.ps1 composer     # Run Composer commands
+.\docker.ps1 bash         # Access the container's bash shell
+.\docker.ps1 logs         # View container logs
+```
+
+### Accessing the API
+
+The API is accessible at `http://localhost:8000/api`
+
+## Features
+
+- RESTful API endpoints
+- JSON responses
+- API authentication using Laravel Sanctum
+- API routing system
+- Database-driven functionality
+
+## API Documentation
+
+API endpoints can be found in the `routes/api.php` file.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
