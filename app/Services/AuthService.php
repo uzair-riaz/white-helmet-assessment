@@ -38,10 +38,8 @@ class AuthService implements AuthServiceInterface
     
     public function login(array $credentials)
     {
-        // Check email
         $user = $this->userRepository->findByEmail($credentials['email']);
         
-        // Check password
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw new AuthenticationException('Invalid credentials');
         }
