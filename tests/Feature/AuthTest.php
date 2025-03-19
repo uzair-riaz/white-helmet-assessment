@@ -80,8 +80,6 @@ class AuthTest extends TestCase
 
     public function test_user_can_logout(): void
     {
-        $this->markTestSkipped('Skip test_user_can_logout due to issues with Sanctum TransientToken');
-        /*
         $user = User::factory()->create();
         
         $response = $this->actingAs($user)
@@ -92,7 +90,6 @@ class AuthTest extends TestCase
                 'status' => 'success',
                 'message' => 'User logged out successfully',
             ]);
-        */
     }
 
     public function test_user_can_get_profile(): void

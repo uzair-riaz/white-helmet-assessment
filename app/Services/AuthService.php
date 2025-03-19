@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\TransientToken;
 
 class AuthService implements AuthServiceInterface
 {
@@ -58,7 +59,12 @@ class AuthService implements AuthServiceInterface
     public function logout(Request $request): bool
     {
         return DB::transaction(function () use ($request) {
-            $request->user()->currentAccessToken()->delete();
+            $token = $request->user()->currentAccessToken();
+            
+            if ($token && !($token instanceof TransientToken)) {
+                $token->delete();
+            }
+            
             return true;
         });
     }
