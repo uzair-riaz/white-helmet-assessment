@@ -130,3 +130,160 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# Task Management API
+
+A Laravel-based API for managing tasks, with features for user authentication, task assignment, commenting, and notifications.
+
+## Features
+
+- User authentication and authorization
+- Create, read, update, and delete tasks
+- Assign tasks to other users
+- Add comments to tasks
+- Email notifications for new comments
+- Advanced queue management for asynchronous processing
+- Caching for improved performance
+- Comprehensive test suite
+
+## Requirements
+
+- PHP 8.1+
+- Composer
+- MySQL or compatible database
+- Redis (for queues and caching)
+- SMTP server for sending emails
+
+## Installation
+
+1. Clone the repository:
+   ```
+   git clone <repository-url>
+   cd task-management-api
+   ```
+
+2. Install dependencies:
+   ```
+   composer install
+   ```
+
+3. Copy environment file and set up your configuration:
+   ```
+   cp .env.example .env
+   ```
+
+4. Update the `.env` file with your database, Redis, and mail settings:
+   ```
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=task_management
+   DB_USERNAME=root
+   DB_PASSWORD=
+
+   CACHE_DRIVER=redis
+   QUEUE_CONNECTION=redis
+   REDIS_HOST=127.0.0.1
+   REDIS_PASSWORD=null
+   REDIS_PORT=6379
+
+   MAIL_MAILER=smtp
+   MAIL_HOST=smtp.mailtrap.io
+   MAIL_PORT=2525
+   MAIL_USERNAME=your_username
+   MAIL_PASSWORD=your_password
+   MAIL_ENCRYPTION=tls
+   MAIL_FROM_ADDRESS=noreply@taskmanagement.com
+   MAIL_FROM_NAME="${APP_NAME}"
+   ```
+
+5. Generate an application key:
+   ```
+   php artisan key:generate
+   ```
+
+6. Run database migrations:
+   ```
+   php artisan migrate
+   ```
+
+7. Start the development server:
+   ```
+   php artisan serve
+   ```
+
+8. Run the queue worker for background processing:
+   ```
+   php artisan queue:work
+   ```
+
+## Docker Setup
+
+Alternatively, you can use Docker for easier setup:
+
+1. Build and start the Docker containers:
+   ```
+   docker-compose up -d
+   ```
+
+2. Generate an application key:
+   ```
+   docker-compose exec app php artisan key:generate
+   ```
+
+3. Run database migrations:
+   ```
+   docker-compose exec app php artisan migrate
+   ```
+
+## API Endpoints
+
+### Authentication
+- `POST /api/register` - Register a new user
+- `POST /api/login` - Login and get access token
+- `POST /api/logout` - Logout (requires authentication)
+- `GET /api/profile` - Get authenticated user profile
+
+### Tasks
+- `GET /api/tasks` - List all tasks (owned and assigned)
+- `POST /api/tasks` - Create a new task
+- `GET /api/tasks/{id}` - Get a specific task
+- `PUT /api/tasks/{id}` - Update a task
+- `DELETE /api/tasks/{id}` - Delete a task
+- `GET /api/users` - Get list of users for assignment
+
+### Comments
+- `GET /api/tasks/{taskId}/comments` - List all comments for a task
+- `POST /api/tasks/{taskId}/comments` - Add a comment to a task
+- `PUT /api/tasks/{taskId}/comments/{id}` - Update a comment
+- `DELETE /api/tasks/{taskId}/comments/{id}` - Delete a comment
+
+## Testing
+
+Run the tests using PHPUnit:
+```
+php artisan test
+```
+
+## Design Patterns
+
+The application makes use of several design patterns and Laravel best practices:
+
+1. **Repository Pattern** - Abstracting data access
+2. **Service Layer** - Business logic separated from controllers
+3. **Queue Jobs** - Handling background processes
+4. **Notifications** - Sending email notifications
+5. **Caching** - Improving performance with efficient caching
+
+## Cache Strategy
+
+The application implements strategic caching to improve performance:
+
+- Task listings are cached for 60 seconds
+- Individual task details with comments are cached
+- Comments for a task are cached
+- Cache invalidation occurs when tasks or comments are modified
+
+## License
+
+This project is licensed under the MIT License.

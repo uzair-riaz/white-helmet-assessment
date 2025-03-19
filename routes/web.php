@@ -2,4 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Web routes disabled as this is an API-only application
+Route::get('/', function () {
+    return response()->json([
+        'message' => 'Welcome to the Task Management API', 
+        'documentation' => 'See README.md for API documentation'
+    ]);
+});
