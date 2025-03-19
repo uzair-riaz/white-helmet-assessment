@@ -11,6 +11,8 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
+      - ./supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./logs/supervisor:/var/log/supervisor
     depends_on:
       - db
       - redis
@@ -22,7 +24,7 @@ services:
     container_name: task-management-db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: root
+      MYSQL_DATABASE: tasks
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"

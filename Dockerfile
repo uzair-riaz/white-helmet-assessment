@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libzip-dev \
     libpng-dev \
-    libonig-dev
+    libonig-dev \
+    supervisor
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -27,6 +28,10 @@ COPY .env.example .env
 
 RUN php artisan key:generate
 
+RUN mkdir -p /var/log/supervisor
+
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 EXPOSE 8000
 
-CMD bash -c "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
