@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Jobs\SendNewCommentNotification;
+use App\Notifications\CommentPosted;
 use App\Repositories\Interfaces\CommentRepositoryInterface;
 use App\Repositories\Interfaces\TaskRepositoryInterface;
 use App\Services\Interfaces\CommentServiceInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class CommentService implements CommentServiceInterface
 {
@@ -31,8 +33,6 @@ class CommentService implements CommentServiceInterface
     public function createComment(array $data, int $taskId)
     {
         return DB::transaction(function () use ($data, $taskId) {
-            $this->taskRepository->getById($taskId);
-
             $commentData = [
                 'content' => $data['content'],
                 'task_id' => $taskId,
@@ -41,7 +41,7 @@ class CommentService implements CommentServiceInterface
 
             $comment = $this->commentRepository->create($commentData);
 
-            SendNewCommentNotification::dispatch($comment);
+            Notification::send($comment->task->user, new CommentPosted($comment->task, $comment));
 
             return $comment;
         });

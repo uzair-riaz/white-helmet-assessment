@@ -287,3 +287,54 @@ The application implements strategic caching to improve performance:
 ## License
 
 This project is licensed under the MIT License.
+
+## Architecture Features
+
+- **Repository and Service Pattern**: Clean separation of concerns with repositories and services
+- **Redis Caching**: Optimized data retrieval with Redis caching
+- **Redis Queue**: Scalable background job processing with Redis as queue driver
+- **Exception Handling**: Graceful error handling including model not found errors
+- **Database Transactions**: Ensuring data integrity with transactions
+
+## Docker Setup
+
+This project is dockerized for easy local development. Docker and Docker Compose are required to run the application using the provided configuration.
+
+### Services
+
+The application runs with the following services:
+
+- **Web Server**: PHP 8.2 with Laravel 10
+- **MySQL**: Database server
+- **Redis**: Used for caching and queue management
+- **Supervisor**: Process monitor to keep queue workers running
+
+### Running the Application
+
+```bash
+docker-compose up -d
+```
+
+This will start the web server, Redis, and the queue worker. The API will be accessible at http://localhost:8000.
+
+## API Endpoints
+
+### Authentication
+- POST `/api/register`: Register a new user
+- POST `/api/login`: Login a user
+- POST `/api/logout`: Logout (requires authentication)
+- GET `/api/profile`: Get authenticated user profile
+
+### Tasks
+- GET `/api/tasks`: Get all tasks (anyone can view all tasks)
+- POST `/api/tasks`: Create a new task
+- GET `/api/tasks/{id}`: Get a specific task (anyone can view)
+- PUT `/api/tasks/{id}`: Update a task (only task owner or assigned user)
+- DELETE `/api/tasks/{id}`: Delete a task (only task owner)
+- GET `/api/users`: Get list of users for task assignment
+
+### Comments
+- GET `/api/tasks/{taskId}/comments`: Get comments for a task
+- POST `/api/tasks/{taskId}/comments`: Add a comment to a task (anyone can comment)
+- PUT `/api/tasks/{taskId}/comments/{id}`: Update a comment (only comment owner)
+- DELETE `/api/tasks/{taskId}/comments/{id}`: Delete a comment (only comment owner or task owner)
