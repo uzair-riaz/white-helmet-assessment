@@ -43,7 +43,7 @@ class CommentPosted extends Notification implements ShouldQueue
             ->line("A new comment has been added to your task: {$this->task->title}")
             ->line("Comment: {$this->comment->content}")
             ->line("Added by: {$this->comment->user->name}")
-            ->action('View Task', url("/tasks/{$this->task->id}"))
+            ->action('View Task', url("/api/tasks/{$this->task->id}"))
             ->line('Thank you for using our Task Management System!');
     }
 
