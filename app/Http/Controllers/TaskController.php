@@ -57,11 +57,6 @@ class TaskController extends Controller
                 'status' => 'success',
                 'data' => $task
             ]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 403);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',

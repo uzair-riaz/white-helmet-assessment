@@ -30,11 +30,6 @@ class CommentController extends Controller
                 'status' => 'success',
                 'data' => $comments
             ]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 403);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',
@@ -56,11 +51,6 @@ class CommentController extends Controller
                 'message' => 'Comment added successfully',
                 'data' => $comment
             ], 201);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 403);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'status' => 'error',

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface TaskRepositoryInterface
 {
+    public function getAll(): Collection;
+    
     public function getAllForUser(int $userId): Collection;
     
     public function getById(int $id);
